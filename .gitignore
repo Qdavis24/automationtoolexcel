@@ -1,4 +1,6 @@
 *.docx
 *.xlsx
 .venv
-
+.idea
+backup
+files
