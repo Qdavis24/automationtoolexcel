@@ -2,6 +2,9 @@ import pandas
 import pandas as pd
 from openpyxl import load_workbook
 from docx import Document
+from docx.opc.exceptions import PackageNotFoundError
+
+
 import yaml
 
 
@@ -42,7 +45,7 @@ class ExcelDf:
         try:
             self.df = pd.read_excel(filepath, header=header)
         except FileNotFoundError as error:
-            input(f"{error}:Excel file path specified is incorrect")
+            input(f"{error}: Excel file path specified is incorrect.")
             exit(1)
 
     def compress_df(self, col_map: tuple):
@@ -93,7 +96,7 @@ class Worksheet:
         try:
             self.worksheet = load_workbook(filepath).active
         except FileNotFoundError as error:
-            input(f"{error}: Excel filepath specified is incorrect")
+            input(f"{error}: Excel filepath specified is incorrect.")
             exit(1)
 
     def gen_drop_indexes_color(self, col: str, argb: str, row_shift: int) -> list:
@@ -155,8 +158,8 @@ class Word:
         """
         try:
             self.doc = Document(filepath)
-        except FileNotFoundError as error:
-            input(f"{error}: word template file path specified is not correct")
+        except PackageNotFoundError as error:
+            input(f"{error}: word template file path specified is incorrect.")
             exit(1)
         self.mapped_questions = mapped_questions
         self.to_delete = []
@@ -191,14 +194,14 @@ class Word:
         for tup in self.to_modify[::-1]:
             curr_p = self.doc.paragraphs[tup[1]]
             curr_p.clear()
-            curr_p.text = str(f"\n\n{self.mapped_questions[tup[0]][0]}\n\n[enter response here]\n\n")
+            curr_p.text = str(f"{self.mapped_questions[tup[0]][0]}\n\n[enter response here]\n\n")
 
             curr_p._p.get_or_add_pPr().get_or_add_numPr().get_or_add_numId().val = 1
             curr_p._p.get_or_add_pPr().get_or_add_numPr().get_or_add_ilvl().val = 0
             curr_p = curr_p._element
 
             for q in self.mapped_questions[tup[0]][1:]:
-                new_p = self.doc.add_paragraph(f"\n\n{q}\n\n[enter response here]\n\n")
+                new_p = self.doc.add_paragraph(f"{q}\n\n[enter response here]\n\n")
                 new_p._p.get_or_add_pPr().get_or_add_numPr().get_or_add_numId().val = 1
                 new_p._p.get_or_add_pPr().get_or_add_numPr().get_or_add_ilvl().val = 0
 
