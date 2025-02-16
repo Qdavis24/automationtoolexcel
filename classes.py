@@ -2,6 +2,29 @@ import pandas
 import pandas as pd
 from openpyxl import load_workbook
 from docx import Document
+import yaml
+
+
+class Config:
+    def __init__(self, filepath):
+        try:
+            with open(filepath) as file:
+                self.config = yaml.safe_load(file)
+        except FileNotFoundError as error:
+            input(f"{error}: config file 'config.yaml' not found.")
+            exit(1)
+        else:
+            self.column_map = ((self.config['excel']['column_map']['column_title_0'],
+                                self.config['excel']['column_map']['column_value_0']),
+                               (self.config['excel']['column_map']['column_title_1'],
+                                self.config['excel']['column_map']['column_value_1'],)
+                               )
+            self.row_shift = self.config['excel']['row_shift']
+            self.header = self.config['excel']['header']
+            self.ignore_color = self.config['excel']['ignore_color']
+            self.excel_filepath = self.config['excel']['filepath']
+            self.word_template_filepath = self.config['word']['template_path']
+            self.word_export_filepath = self.config['word']['export_path']
 
 
 class ExcelDf:
@@ -19,7 +42,8 @@ class ExcelDf:
         try:
             self.df = pd.read_excel(filepath, header=header)
         except FileNotFoundError as error:
-            print(f"{error}:Excel file path specified is incorrect")
+            input(f"{error}:Excel file path specified is incorrect")
+            exit(1)
 
     def compress_df(self, col_map: tuple):
         """ removes unwanted cols and sets the column names in df
@@ -69,7 +93,8 @@ class Worksheet:
         try:
             self.worksheet = load_workbook(filepath).active
         except FileNotFoundError as error:
-            print(f"{error}: Excel filepath specified is incorrect")
+            input(f"{error}: Excel filepath specified is incorrect")
+            exit(1)
 
     def gen_drop_indexes_color(self, col: str, argb: str, row_shift: int) -> list:
         """ searches excel spreadsheet by iterating through cells in a specified col and looks for cells with a background
@@ -131,7 +156,8 @@ class Word:
         try:
             self.doc = Document(filepath)
         except FileNotFoundError as error:
-            print(f"{error}: word doc file path specified is not correct")
+            input(f"{error}: word template file path specified is not correct")
+            exit(1)
         self.mapped_questions = mapped_questions
         self.to_delete = []
         self.to_modify = []

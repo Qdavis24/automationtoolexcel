@@ -1,0 +1,16 @@
+# Excel Settings
+excel:
+  filepath: "./files/input.xlsx"
+  row_shift: 3
+  header: 1
+  column_map:
+    column_title_0: 'section'
+    column_value_0: 2
+    column_title_1: 'question'
+    column_value_1: 10
+  ignore_color: "FF00B050"
+
+# Word Document Settings
+word:
+  template_path: "./files/template.docx"
+  export_path: "./files/new.docx"

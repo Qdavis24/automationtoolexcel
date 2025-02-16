@@ -5,3 +5,5 @@
 backup
 files
 *.pyc
+build
+*.spec
