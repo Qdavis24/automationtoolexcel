@@ -22,10 +22,8 @@ if __name__ == "__main__":
     word = Word(config.word_template_filepath, mapped_questions=data.mapped_questions)
 
     word.gen_modify_indexes()
-    word.check_modify_indexes()
     word.modify()
     word.gen_delete_indexes()
-    word.check_delete_indexes()
     word.remove()
 
     word.save(config.word_export_filepath)
