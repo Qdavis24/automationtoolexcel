@@ -1,29 +1,25 @@
-from classes import ExcelDf, Data, Worksheet, Word, Config
+from classes import ExcelDf, Data, Word, Config
 
 if __name__ == "__main__":
     config = Config("./config.yaml")
-    excel = ExcelDf(config.excel_filepath, header=config.header)
-    ws = Worksheet(config.excel_filepath)
+    excel = ExcelDf(filepath=config.excel_filepath, sheet_name=config.sheet_name,
+                    row_shift=config.row_shift, header=config.header)
+
+    excel.compress_df(config.standard_col_index, config.rfi_col_index)
+    excel.clean_df(config.ignore_color, config.rfi_col)
+    excel.display_dataframe()
+
     data = Data()
+    data.map_questions_to_sections(sections=excel.uniques(excel.STANDARD_COLUMN_NAME), df=excel.df,
+                                   rfi_col_name=excel.RFI_COLUMN_NAME,
+                                   standard_col_name=excel.STANDARD_COLUMN_NAME)
+    data.pretty_print()
 
-    drops = ws.gen_drop_indexes_color("K", config.ignore_color, row_shift=config.row_shift)
-
-    excel.compress_df(config.column_map)
-
-    excel.remove_rows(drops)
-
-    excel.remove_na()
-
-    excel.remove_keywords(column="question", keyword="see", slice=(0, 3))
-
-    data.map_questions_to_sections(sections=excel.uniques("section"), slice_key=(0, 4), df=excel.df, key="section",
-                                   value="question")
-
-    word = Word(config.word_template_filepath, mapped_questions=data.mapped_questions)
-
-    word.gen_modify_indexes()
+    word = Word(filepath=config.word_template_filepath, mapped_questions=data.mapped_questions)
     word.modify()
-    word.gen_delete_indexes()
     word.remove()
 
-    word.save(config.word_export_filepath)
+    word.save(filepath=config.word_export_filepath)
+
+    input("Successfully generated document... \n Press enter to exit script.\n")
+    exit(0)
