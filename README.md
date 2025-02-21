@@ -1,64 +1,30 @@
-# Document Processing Automation Suite
+# Document Automation Tool
 
-A configurable Python automation system that transforms Excel data into formatted Word documents using intelligent mapping and business rules. Built to streamline document processing while maintaining data integrity and formatting consistency.
+A Python-based automation tool that transforms Excel RFI (Request for Information) data into structured Word documents. The system intelligently maps questions from Excel spreadsheets to corresponding sections in Word templates.
 
 ## Features
 
-- Configurable data mapping via YAML
-- Excel data extraction and transformation
-- Automated Word document generation 
-- Template-based document formatting
-- Error handling and logging
-- Color-based row filtering
-- Multi-section document support
-
-## Technologies
-
-- Python
-- pandas for data manipulation
-- YAML for configuration management
-- Excel/Word document processing
-- Object-oriented architecture
+- Automated extraction of RFI questions from Excel spreadsheets
+- Smart section mapping based on document structure  
+- Color-based row filtering for data cleanup
+- Template-based Word document generation
+- Configurable via YAML for easy maintenance
 
 ## Configuration
 
-The system uses YAML configuration files to define:
-- Column mappings between Excel and Word
-- Document templates and formatting rules
-- Section headers and content rules
-- Row filtering parameters
+The system uses a YAML file for configuration:
 
-Example config structure:
 ```yaml
+filepaths:
+ data_spreadsheet: "./files/input.xlsx"
+ document_template: "./files/template.docx"
+ final_document: "./files/completed_review.docx"
+
 excel:
-  filepath: "./data/source.xlsx"
-  header: 0
-  row_shift: 1
-  column_map:
-    column_title_0: "Section"
-    column_value_0: 0
-    column_title_1: "Content" 
-    column_value_1: 1
-```
-
-## Architecture
-
-The system follows an object-oriented design with key components:
-- ExcelDf: Handles Excel data processing
-- Word: Manages document generation
-- Config: Loads and validates configuration
-- Data: Handles data mapping and transformation
-- Worksheet: Direct Excel sheet manipulation
-
-## Usage
-
-1. Configure mappings in config.yaml
-2. Place source Excel file in specified location
-3. Run the automation script
-4. Generated Word documents output to specified folder
-
-Note: Detailed configuration guide and source code available upon request and NDA.
-
----
-*For security and privacy reasons, source code examples using actual business logic have been omitted from this README.*
-```
+ standard_column: "C"  # Column containing section identifiers
+ rfi_column: "K"      # Column containing RFI questions 
+ sheet_name: "FINAL verification"
+ advanced:
+   row_shift: 3       # Number of rows to skip from top
+   header: 1          # Header row position
+   ignore_color: "FF00B050"  # Rows with this color will be ignored
