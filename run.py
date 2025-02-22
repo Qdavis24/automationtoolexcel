@@ -21,5 +21,5 @@ if __name__ == "__main__":
 
     word.save(filepath=config.word_export_filepath)
 
-    input("Successfully generated document... \n Press enter to exit script.\n")
-    exit(0)
+    input("Successfully generated document... \n Press enter to exit script...\n")
+

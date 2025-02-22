@@ -55,7 +55,8 @@ class Config:
            """
         try:
             with open(filepath, 'r', encoding='utf-8') as file:
-                self.config = yaml.safe_load(file)
+                cleaned_yaml = self._clean_windows_paths(file.read())
+                self.config = yaml.safe_load(cleaned_yaml)
             if 'excel' not in self.config or 'filepaths' not in self.config:
                 raise ConfigError("Missing required sections in config file")
         except yaml.YAMLError as error:
@@ -82,6 +83,9 @@ class Config:
             self.header = self.config['excel']['advanced']['header']
             self.ignore_color = self.config['excel']['advanced']['ignore_color']
 
+    def _clean_windows_paths(self, yaml_content):
+        return yaml_content.replace('\\', '/')
+
     def _verify_extensions(self, filepath: str, ext: str):
         """Validate and correct file extension.
 
@@ -92,11 +96,9 @@ class Config:
            Returns:
                Filepath with corrected extension.
            """
-        split = filepath.lstrip(".").split(".")
-        if len(split) < 2:
-            return "." + split[0] + ext
-        if split[1] != ext:
-            return "." + split[0] + ext
+        if not filepath.lower().endswith(ext):
+            return filepath + ext
+        return filepath
 
     def _index_from_letter(self, char):
         """Convert Excel column letter to zero-based index.
@@ -390,9 +392,8 @@ class Word:
         for par_index_section_key in self.to_modify[::-1]:
             curr_p = self.doc.paragraphs[par_index_section_key[1]]
             curr_p.clear()
-            curr_p = self._gen_paragraph(curr_p, self.mapped_questions[par_index_section_key[0]][0])
-
-            for question in self.mapped_questions[par_index_section_key[0]][1:]:
+            curr_p = curr_p._element
+            for question in self.mapped_questions[par_index_section_key[0]]:
                 new_p = self.doc.add_paragraph()
                 curr_p.addnext(self._gen_paragraph(new_p, question))
 

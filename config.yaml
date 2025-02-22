@@ -1,17 +1,15 @@
 # Filepaths
 filepaths:
-  data_spreadsheet: "./files/input.xlsx"
-  document_template: "./files/template.docx"
-  final_document: "./files/completed_review.docx"
+  data_spreadsheet:
+  final_document:
+  document_template:
 
 # Excel Settings
 excel:
-  standard_column: "C"
-  rfi_column: "K"
-  sheet_name: "FINAL verification"
+  standard_column:
+  rfi_column:
+  sheet_name:
   advanced:
     row_shift: 3
     header: 1
     ignore_color: "FF00B050"
-
-
